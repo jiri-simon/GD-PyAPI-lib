@@ -57,6 +57,8 @@ def logIn(hostname,username,password):
 """% (username ,password)
     headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
     url='%s/gdc/account/login' % hostname
+    #print url 
+    #print values
     CallLogin=RequestURL2(url,values,headers,'POST')
     if CallLogin['code'] == 200:
         Profile = (json.loads(CallLogin['read'])['userLogin'])['state']
@@ -88,10 +90,10 @@ def getTT(hostname,SST):
 def logOut(hostname,GDCAuthTT,userid):
     headers = {"Accept": "application/json"}
     headers["Cookie"] =  "$Version=0; GDCAuthTT=%s; $Path=/gdc/account"% GDCAuthTT
-    print headers
-    print userid
+    #print headers
+    #print userid
     url = hostname + userid
-    print url
+    #print url
     CallLogout=RequestURL2(url,"",headers,'DELETE')
     if CallLogout['code'] == 200:
         print "User logout: %s"%CallLogout['read']

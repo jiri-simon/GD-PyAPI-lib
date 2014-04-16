@@ -62,14 +62,9 @@ def getUsers(hostname,GDCAuthTT,domain):
     CallGetUsers=RequestURL2(url,"",headers,'GET')
     return CallGetUsers
     
-def ChangePasswdUser(hostname,GDCAuthTT,userid,FirstName,LastName,adminid,passw):
+def ChangePasswdUser(hostname,GDCAuthTT,userid,FirstName,LastName,passw):
 
-    if userid.split('/', 4 )[4] == adminid.split('/', 4 )[4] :
-        print "This user is admin, dont change password, skipped" 
-        sys.exit
-    else :
-       # print "change password of user %s" % (userid)
-        values = """
+    values = """
   {
     "accountSetting": {
       "password": "%s",
@@ -79,9 +74,45 @@ def ChangePasswdUser(hostname,GDCAuthTT,userid,FirstName,LastName,adminid,passw)
     }
   }
 """ %(passw,passw,FirstName,LastName)
-        headers = { 'Accept': 'application/json','Content-Type': 'application/json'}
-        headers["Cookie"] =  "$Version=0; GDCAuthTT="+GDCAuthTT+"; $Path=/gdc/account"
-        url = hostname + userid
-        CallChangePasswd=RequestURL2(url,values,headers,'PUT')
-        return CallChangePasswd
-         #print "Password for user %s %s has been successfully changed" % (FirstName, LastName)
+    headers = { 'Accept': 'application/json','Content-Type': 'application/json'}
+    headers["Cookie"] =  "$Version=0; GDCAuthTT="+GDCAuthTT+"; $Path=/gdc/account"
+    url = hostname + userid
+    print url
+    print values
+    CallChangePasswd=RequestURL2(url,values,headers,'PUT')
+    return CallChangePasswd
+    #print "Password for user %s %s has been successfully changed" % (FirstName, LastName)
+
+def ChangeUserSSO(hostname,GDCAuthTT,userid,SSOProvider,FirstName,LastName):
+
+    values = """
+  {
+    "accountSetting": {
+      "ssoProvider":"%s",
+      "firstName":"%s",
+      "lastName":"%s"
+      }
+  }
+""" %(SSOProvider,FirstName,LastName)
+    headers = { 'Accept': 'application/json','Content-Type': 'application/json'}
+    headers["Cookie"] =  "$Version=0; GDCAuthTT="+GDCAuthTT+"; $Path=/gdc/account"
+    url = hostname + userid
+    print url
+    print values
+    CallChangeSSO=RequestURL2(url,values,headers,'PUT')
+    return CallChangeSSO
+    #print "Password for user %s %s has been successfully changed" % (FirstName, LastName)
+
+def gedUserDetail(hostname,GDCAuthTT,userid):
+    headers = { 'Accept': 'application/json','Content-Type': 'application/json'}
+    headers["Cookie"] =  "$Version=0; GDCAuthTT=%s;"% GDCAuthTT
+    url="%s/gdc/account/profile/%s" % (hostname , userid)
+    gedDetail=RequestURL2(url,"",headers,'GET')
+    return gedDetail
+
+def listOfProjects(hostname,GDCAuthTT,userid):
+    headers = { 'Accept': 'application/json','Content-Type': 'application/json'}
+    headers["Cookie"] =  "$Version=0; GDCAuthTT=%s;"% GDCAuthTT
+    url="%s/gdc/account/profile/%s/projects" % (hostname,userid)
+    ListOfPoject=RequestURL2(url,"",headers,'GET')
+    return ListOfPoject
